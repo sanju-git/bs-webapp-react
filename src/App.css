@@ -1,38 +1,613 @@
-.App {
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #a7a4dd;
+}
+
+.wrapper {
+  height: 80%;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-start {
+  justify-content: flex-start;
+}
+
+.justify-content-end {
+  justify-content: flex-end;
+}
+
+.left-content {
+  margin-right: auto;
+  /* Pushes the right content to the end */
+}
+
+.right-content {
+  margin-left: auto;
+  /* Pushes the left content to the beginning */
+}
+
+.friday {
+  color: #003c71;
+}
+
+.container {
+  position: absolute;
+  width: 100%;
+  left: 0px;
+  margin: 0px auto;
+  display: inline-block;
+}
+
+div.app {
+  position: relative;
+  width: 40%;
+  height: 100vh;
+  background: #003c71;
+}
+
+div.app:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  box-shadow: inset 0 80px 85px -35px #3c33b0;
+  z-index: 0;
+}
+
+div.app:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  bottom: 0;
+  box-shadow: inset 0 -80px 85px -35px #3c33b0;
+  z-index: 0;
+}
+
+div.app div.head {
+  z-index: 1;
+  position: relative;
+  width: 100%;
+  height: 50px;
+  line-height: 48px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.7);
+  padding-top: 10px;
+  background: white;
+}
+
+div.head span.title {
+  position: absolute;
+  width: 100%;
+  display: inline-block;
+  left: 0;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 2px;
+  color: #fff;
+}
+
+div.head span.messages-notification {
+  position: relative;
+  float: left;
+  font-size: 18px;
+  font-weight: normal;
+  margin-left: 15px;
+  color: #fff;
+  margin-top: 2px;
+}
+
+div.head span.messages-notification span.count {
+  position: absolute;
+  font-size: 10px;
+  width: 17px;
+  height: 17px;
+  display: inline-block;
+  background: #f42052;
+  line-height: 17px;
+  border-radius: 100%;
+  margin-top: 6px;
+  margin-left: -10px;
+}
+
+div.head span.create-new {
+  float: right;
+  font-size: 17px;
+  font-weight: normal;
+  margin-right: 15px;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.clearfix::after {
+  content: '';
+  clear: both;
+  display: table;
+}
+
+div.search-bar {
+  position: relative;
+  margin-top: 15px;
+  text-align: center;
+  z-index: 1;
+}
+
+div.search-bar .ip-search {
+  width: 85%;
+  border: none;
+  font-size: 16px;
+  padding: 10px 15px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50px;
+  border: 1px solid rgba(60, 51, 176, 0.7);
+  box-shadow: inset 0 25px 25px -15px rgba(60, 51, 176, 0.15);
+}
+
+div.search-bar .ip-search::placeholder {
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+
+div.search-bar i.fa {
+  position: absolute;
+  right: 0;
+  margin-right: 25px;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+}
+
+.friend-list {
+  margin-top: 35px;
+}
+
+.friend-list ul li {
+  position: relative;
+  list-style: none;
+  float: left;
+  width: 20%;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.friend-list ul li img {
+  border-radius: 100%;
+  border: 3px solid rgba(255, 255, 255, 1);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.friend-list ul li:nth-child(2n+1) img {
+  width: 40px;
+  height: 40px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.friend-list ul li:nth-child(2n+2) img {
+  width: 50px;
+  height: 50px;
+  transform: translateY(-10%);
+}
+
+.friend-list ul li:nth-child(3) img {
+  width: 70px;
+  height: 70px;
+  transform: translateY(-20%);
+}
+
+.friend-list ul li:nth-child(2n+1) img,
+.friend-list ul li:nth-child(2n+1) span.name {
+  opacity: 0.4;
+}
+
+.friend-list ul li:nth-child(2n+2) img,
+.friend-list ul li:nth-child(2n+2) span.name {
+  opacity: 0.7;
+}
+
+.friend-list ul li.active img,
+.friend-list ul li.active span.name {
+  opacity: 1;
+}
+
+.friend-list ul li.active img {
+  box-shadow: 1px 1px 0 rgba(39, 28, 93, 0.5),
+    -1px -1px 0 rgba(39, 28, 93, 0.5),
+    0 0 35px rgba(255, 255, 255, 0.3);
+}
+
+.friend-list ul li span.name {
+  position: relative;
+  width: 100%;
+  left: 0;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.friend-list ul li.active span.name {
+  top: -7px;
+}
+
+.friend-list ul li span.name span.status {
+  display: block;
+  text-transform: none;
+  font-weight: 300;
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.friend-list ul li.active span.name span.status {
+  font-size: 9px;
+}
+
+.friend-list ul li:nth-child(2n+1) span.messages span.count {
+  position: absolute;
+  font-size: 10px;
+  width: 17px;
+  height: 17px;
+  display: inline-block;
+  background: #f42052;
+  z-index: 10;
+  line-height: 17px;
+  border-radius: 100%;
+  margin-top: -2px;
+  right: 0;
+  margin-right: 10px;
+  color: #fff;
+}
+
+.friend-list ul li:nth-child(2n+2) span.messages span.count {
+  position: absolute;
+  z-index: 10;
+  font-size: 10px;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  background: #f42052;
+  line-height: 20px;
+  border-radius: 100%;
+  margin-top: -10px;
+  right: 0;
+  margin-right: 7px;
+  color: #fff;
+}
+
+.friend-list ul li.active span.messages,
+.friend-list ul li span.messages.hide {
+  display: none;
+}
+
+div.chat-messages {
+  position: relative;
+  margin-top: 15px;
+  z-index: 10;
+  height: 96%;
+}
+
+div.chat-messages div.chat {
+  position: relative;
+  width: 60%;
+  height: 100%;
+  background: #fcfcfe;
+  left: 16%;
+  margin-top: 40px;
+  padding: 20px;
+  border-radius: 5px;
+  font-size: 15px;
+
+  box-shadow: 30px 0 0 -15px #a7a4dd,
+    60px 0 0 -30px #7570c8,
+    -30px 0 0 -15px #a7a4dd,
+    -60px 0 0 -30px #7570c8,
+    0 0 25px rgba(255, 255, 255, 0.5);
+}
+
+div.chat div.chat-content>span {
+  margin-bottom: 12px;
+}
+
+div.chat div.chat-content span.friend {
+  position: relative;
+  max-width: max-content;
+  display: inline-block;
+  background: #003c71;
+  padding: 10px;
+  box-shadow: 2px 2px 20px -2px #003c7147;
+  color: #fff;
+  border-radius: 15px 15px 15px 2px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* scroll bar */
+
+/* Custom scrollbar styles */
+.chat-content {
+  max-height: 95%;
+  /* Adjust this height as needed */
+  overflow-y: auto;
+  padding-right: 16px;
+  /* Add space between the content and the scrollbar */
+  scrollbar-width: thin;
+  /* For Firefox */
+  scrollbar-color: #003c71 #f0f0f0;
+  /* For Firefox */
+}
+
+/* For Webkit browsers */
+.chat-content::-webkit-scrollbar {
+  width: 12px;
+  /* Adjust the width as needed */
+}
+
+.chat-content::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  /* Track color */
+  border-radius: 10px;
+  /* Roundness of the scroll track */
+}
+
+.chat-content::-webkit-scrollbar-thumb {
+  background-color: #003c71;
+  /* Thumb color */
+  border-radius: 10px;
+  /* Roundness of the scroll thumb */
+  border: 2px solid #f0f0f0;
+  /* Padding around the thumb for spacing */
+}
+
+.chat-content::-webkit-scrollbar-button {
+  display: none;
+  /* Remove the up and down arrows */
+}
+
+/* Optional: to remove scrollbar corner if visible */
+.chat-content::-webkit-scrollbar-corner {
+  background: #f0f0f0;
+}
+
+
+/* scrollbar ends */
+
+div.chat div.chat-content span.friend.first {
+  border-radius: 15px 15px 15px 2px;
+}
+
+div.chat div.chat-content span.friend.last {
+  border-radius: 2px 15px 15px 15px;
+}
+
+div.chat div.chat-content span.friend span.time {
+  position: absolute;
+  display: block;
+  right: 0;
+  margin-top: 5px;
+  margin-right: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(60, 51, 176, 0.5);
+}
+
+div.chat div.chat-content span.you {
+  position: relative;
+  float: right;
+  max-width: max-content;
+  background: #fff;
+  display: inline-block;
+  padding: 10px;
+  color: #003c71;
+  border-radius: 15px 15px 2px 15px;
+  box-shadow: 2px 2px 20px #003c7140, inset -10px -10px 55px #ffffff;
+  border: 1px solid #003c71;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+div.chat div.chat-content span.you span.time {
+  position: absolute;
+  display: block;
+  right: 0;
+  margin-top: 5px;
+  margin-right: 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+div.chat div.chat-content span.you.first {
+  border-radius: 15px 15px 2px 15px;
+}
+
+div.chat div.chat-content span.you.last {
+  border-radius: 15px 2px 15px 15px;
+}
+
+div.msg-box {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  border-top: 1px solid rgba(60, 51, 176, 0.1);
+  overflow: hidden;
+}
+
+div.msg-box .ip-msg {
+  width: 85%;
+  font-size: 14px;
+  padding: 15px;
+  padding-right: 30%;
+  color: rgba(60, 51, 176, 0.9);
+  border: none;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+div.msg-box .ip-msg::placeholder {
+  color: rgba(60, 51, 176, 0.4);
+}
+
+div.msg-box span.btn-group {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 10px;
+  margin-right: 10px;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+
+.logo {
+  height: 42px;
+  width: 120px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.send {
+  height: 24px;
+  width: 24px;
+}
+
+
+/* spinner style starts */
+
+.lds-ellipsis,
+.lds-ellipsis div {
+  box-sizing: border-box;
+}
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ellipsis div {
+  position: absolute;
+  top: 33.33333px;
+  width: 13.33333px;
+  height: 13.33333px;
+  border-radius: 50%;
+  background: currentColor;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
   }
-  to {
-    transform: rotate(360deg);
+
+  100% {
+    transform: scale(1);
   }
+}
+
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+/* spinner style ends */
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 60px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, #003c71 90%, #0000);
+  background:
+    var(--_g) 0% 50%,
+    var(--_g) 50% 50%,
+    var(--_g) 100% 50%;
+  background-size: calc(100%/3) 50%;
+  animation: l3 1s infinite linear;
+}
+
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%
+  }
+
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%
+  }
+
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%
+  }
+
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%
+  }
+}
+
+.recording-indicator {
+  color: red;
+  font-size: 14px;
+  width: 85%;
+  padding: 15px;
+  padding-right: 30%;
+  border: none;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.ml-1 {
+  margin-left: 10px;
 }
