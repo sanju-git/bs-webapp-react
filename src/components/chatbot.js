@@ -6,7 +6,7 @@ const Chatbot = () => {
 
     const [messages, setMessages] = useState([]);
     const [showSpinner, setShowSpinner] = useState(false);
-    const [reportURL, setReportURL] = useState("https://public.tableau.com/app/profile/aarthe.radhakrishnan/viz/TopNProducts_17168006299450/TopNproductsbyCOGS?publish=yes&TopN=5&Country=china");
+    const [reportURL, setReportURL] = useState('');
 
     const sendMessage = async (inputText) => {
         if (inputText.trim() === '') return;
@@ -14,7 +14,7 @@ const Chatbot = () => {
         setShowSpinner(true);
         const requestBody = {
             text: inputText,
-            sessionId: 44201,
+            sessionId: 290524,
         };
 
         try {
@@ -85,7 +85,7 @@ const Chatbot = () => {
             {(reportURL && reportURL.length >= 1) && (
                 <div style={{ width: '60%' }}>
                     <div>
-                        <Tableau reportURL={reportURL} />
+                        <Tableau iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
                     </div>
                     {/* 
             <tableau-viz id="tableauViz"
