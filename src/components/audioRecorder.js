@@ -1,32 +1,36 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faCircleArrowUp, faMicrophone, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const AudioRecorder = (props) => {
     const { onSetIsRecording } = props;
     const [isRecording, setIsRecording] = useState(false);
     const [recorder, setRecorder] = useState(null);
     const [audioChunks, setAudioChunks] = useState([]);
-    const [recordings, setRecordings] = useState([]);
     const mediaStreamRef = useRef(null);
 
     const handleStartRecording = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaStreamRef.current = stream;
-        const newRecorder = new MediaRecorder(stream);
-        newRecorder.ondataavailable = event => {
-            if (event.data.size > 0) {
-                setAudioChunks(prev => [...prev, event.data]);
-            }
-        };
-        newRecorder.start();
-        setRecorder(newRecorder);
-        setIsRecording(true);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaStreamRef.current = stream;
+            const newRecorder = new MediaRecorder(stream);
+            newRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    setAudioChunks((prev) => [...prev, event.data]);
+                }
+            };
+            newRecorder.start();
+            setRecorder(newRecorder);
+            setIsRecording(true);
+        } catch (error) {
+            console.error('Microphone access denied', error);
+            alert('Microphone access denied');
+        }
     };
 
     const handleStopRecording = () => {
         recorder.stop();
-        mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        mediaStreamRef.current.getTracks().forEach((track) => track.stop());
         setIsRecording(false);
     };
 
@@ -42,72 +46,54 @@ const AudioRecorder = (props) => {
 
     useEffect(() => {
         if (!isRecording && audioChunks.length > 0) {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            const url = URL.createObjectURL(audioBlob);
-            setRecordings(prev => [...prev, { url, blob: audioBlob }]);
+            const audioBlob = new Blob(audioChunks, { type: 'audio/l16; rate=16000' });
+            handleSendAudio(audioBlob);
             setAudioChunks([]);
         }
     }, [isRecording, audioChunks]);
 
-    const handlePlayAudio = (url) => {
-        const audio = new Audio(url);
-        audio.play();
-    };
-
     const handleSendAudio = async (blob) => {
-        const formData = new FormData();
-        formData.append('audio', blob, 'recording.wav');
-
         try {
-            const response = await fetch('http://localhost:5000/upload', {
+            const formData = new FormData();
+            formData.append('audio', blob);
+            formData.append('sessionId', 639); // Session ID or user ID
+
+            const response = await fetch('http://localhost:8080/upload', {
                 method: 'POST',
                 body: formData,
             });
 
-            if (response.ok) {
-                console.log('Audio file successfully sent to the server');
-            } else {
-                console.error('Failed to send audio file');
+            if (!response.ok) {
+                throw new Error('Failed to send audio file');
             }
+
+            const audioData = await response.blob(); // Use blob() instead of arrayBuffer()
+            const audioBlob = new Blob([audioData], { type: 'audio/mpeg' });
+
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+            window.open(audioUrl);
         } catch (error) {
-            console.error('Error sending audio file:', error);
+            console.error('Error sending or playing audio:', error);
         }
     };
 
-    const handleDeleteRecording = (index) => {
-        setRecordings(prev => prev.filter((_, i) => i !== index));
-    };
 
     return (
         <div className="audio-recorder">
             <i onClick={handleToggleRecording}>
                 {isRecording ? (
-                    <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
+                    <FontAwesomeIcon style={{ color: '#d11a2a', height: 24, width: 24 }} icon={faTrash} />
                 ) : (
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faMicrophone} />
+                    <FontAwesomeIcon style={{ color: '#133a84', height: 24, width: 24 }} icon={faMicrophone} />
                 )}
             </i>
             {isRecording && (
                 <i onClick={handleToggleRecording}>
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
+                    <FontAwesomeIcon style={{ color: '#133a84', height: 24, width: 24 }} icon={faCircleArrowUp} />
                 </i>
             )}
-            {/* <div className="recordings-list">
-                {recordings.map((recording, index) => (
-                    <div key={index} className="recording-item">
-                        <audio controls src={recording.url}></audio>
-                        <i onClick={() => handlePlayAudio(recording.url)}>
-                            <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faPlay} />
-                        </i>
-                        <i onClick={() => handleSendAudio(recording.blob)}>
-                            <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faPaperPlane} />
-                        </i>
-                        <i onClick={() => handleDeleteRecording(index)}>
-                            <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
-                        </i>
-                    </div>
-                ))}
-            </div> */}
         </div>
     );
 };
