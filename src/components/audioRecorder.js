@@ -84,12 +84,12 @@ const AudioRecorder = (props) => {
                 {isRecording ? (
                     <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
                 ) : (
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faMicrophone} />
+                    <FontAwesomeIcon style={{ color: "#115f65", height: 24, width: 24 }} icon={faMicrophone} />
                 )}
             </i>
             {isRecording && (
                 <i onClick={handleToggleRecording}>
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
+                    <FontAwesomeIcon style={{ color: "#115f65", height: 24, width: 24 }} icon={faCircleArrowUp} />
                 </i>
             )}
             {/* <div className="recordings-list">

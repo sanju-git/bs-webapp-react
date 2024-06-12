@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import SendArea from './sendArea';
 import Tableau from './tableau';
+import Header from './header';
 
 const Chatbot = () => {
 
@@ -50,17 +51,6 @@ const Chatbot = () => {
     return (
         <div className="container d-flex">
             <div className="app">
-                <div className="d-flex align-items-center justify-content-center head clearfix">
-                    <div className="friday">
-                        <h2>F.R.I.D.A.Y</h2>
-                    </div>
-                    <div className="friday">
-                        <h4 style={{ marginLeft: 10, marginRight: 10 }}>X</h4>
-                    </div>
-                    <div>
-                        <img className='logo' src='/images/bs.png' alt="logo" />
-                    </div>
-                </div>
                 <div className="body wrapper">
                     <div className="chat-messages">
                         <div className="chat">

@@ -5,12 +5,12 @@
 }
 
 body {
-  font-family: 'Roboto', sans-serif;
-  background: #a7a4dd;
+  font-family: 'Arial';
+  background: #E6F0FF;
 }
 
 .wrapper {
-  height: 80%;
+  height: 90%;
 }
 
 .d-flex {
@@ -43,8 +43,25 @@ body {
   /* Pushes the left content to the beginning */
 }
 
+.bsc-arrow-wrapper {
+  position: absolute;
+  left: 9px;
+  top: 23px;
+}
+
+.bsc-arrow {
+  height: 38px;
+  width: 51px;
+}
+
 .friday {
-  color: #003c71;
+  color: #fff;
+}
+
+.bs-logo {
+  position: absolute;
+  right: 12px;
+  top: 18px;
 }
 
 .container {
@@ -58,22 +75,22 @@ body {
 div.app {
   position: relative;
   width: 40%;
-  height: 100vh;
-  background: #003c71;
+  height: 89vh;
+  background: #9cc1c4;
 }
 
-div.app:before {
+/* div.app:before {
   content: '';
   position: absolute;
   left: 0;
   width: 100%;
   height: 100%;
   display: inline-block;
-  box-shadow: inset 0 80px 85px -35px #3c33b0;
+  box-shadow: inset 0 80px 85px -35px #008F99;
   z-index: 0;
-}
+} */
 
-div.app:after {
+/* div.app:after {
   content: '';
   position: absolute;
   left: 0;
@@ -81,25 +98,41 @@ div.app:after {
   height: 100%;
   display: inline-block;
   bottom: 0;
-  box-shadow: inset 0 -80px 85px -35px #3c33b0;
+  box-shadow: inset 0 -80px 85px -35px #008F99;
   z-index: 0;
-}
+} */
 
-div.app div.head {
+.head {
   z-index: 1;
   position: relative;
   width: 100%;
-  height: 50px;
+  height: 10vh;
   line-height: 48px;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
   padding-top: 10px;
-  background: white;
+  background: #003c71;
+  box-shadow: inset 0 0 15px 7px #002444;
 }
 
-div.head span.title {
+.head::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 43px 83px;
+  /* Adjust size of the triangle */
+  border-style: solid;
+  border-color: transparent transparent transparent #fff;
+  /* Set the triangle color to match the background */
+  border-left-color: #fff;
+  /* Set the left border color to match the div border */
+}
+
+.head span.title {
   position: absolute;
   width: 100%;
   display: inline-block;
@@ -110,7 +143,7 @@ div.head span.title {
   color: #fff;
 }
 
-div.head span.messages-notification {
+.head span.messages-notification {
   position: relative;
   float: left;
   font-size: 18px;
@@ -120,7 +153,7 @@ div.head span.messages-notification {
   margin-top: 2px;
 }
 
-div.head span.messages-notification span.count {
+.head span.messages-notification span.count {
   position: absolute;
   font-size: 10px;
   width: 17px;
@@ -133,7 +166,7 @@ div.head span.messages-notification span.count {
   margin-left: -10px;
 }
 
-div.head span.create-new {
+.head span.create-new {
   float: right;
   font-size: 17px;
   font-weight: normal;
@@ -319,11 +352,8 @@ div.chat-messages div.chat {
   border-radius: 5px;
   font-size: 15px;
 
-  box-shadow: 30px 0 0 -15px #a7a4dd,
-    60px 0 0 -30px #7570c8,
-    -30px 0 0 -15px #a7a4dd,
-    -60px 0 0 -30px #7570c8,
-    0 0 25px rgba(255, 255, 255, 0.5);
+  box-shadow: 31px 0 0 -15px #6ac5cb9c, 60px 0 0 -30px #008F99,
+    -30px 0 0 -15px #6ac5cb9c, -60px 0 0 -30px #008F99, 0 0 25px rgba(255, 255, 255, 0.5);
 }
 
 div.chat div.chat-content>span {
@@ -334,9 +364,9 @@ div.chat div.chat-content span.friend {
   position: relative;
   max-width: max-content;
   display: inline-block;
-  background: #003c71;
+  background: #005F66;
   padding: 10px;
-  box-shadow: 2px 2px 20px -2px #003c7147;
+  box-shadow: 2px 2px 20px -2px #005F66;
   color: #fff;
   border-radius: 15px 15px 15px 2px;
   margin-top: 5px;
@@ -419,10 +449,10 @@ div.chat div.chat-content span.you {
   background: #fff;
   display: inline-block;
   padding: 10px;
-  color: #003c71;
+  color: #005F66;
   border-radius: 15px 15px 2px 15px;
-  box-shadow: 2px 2px 20px #003c7140, inset -10px -10px 55px #ffffff;
-  border: 1px solid #003c71;
+  box-shadow: 2px 2px 20px #005F66, inset -10px -10px 55px #ffffff;
+  border: 2px solid #005F66;
   margin-top: 5px;
   margin-bottom: 5px;
 }
@@ -451,7 +481,7 @@ div.msg-box {
   width: 100%;
   bottom: 0;
   left: 0;
-  border-top: 1px solid rgba(60, 51, 176, 0.1);
+  border-top: 1px solid #9ec1c4;
   overflow: hidden;
 }
 
@@ -481,7 +511,7 @@ div.msg-box span.btn-group {
 
 
 .logo {
-  height: 42px;
+  height: 50px;
   width: 120px;
 }
 
