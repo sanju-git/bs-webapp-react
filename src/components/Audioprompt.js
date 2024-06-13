@@ -7,6 +7,10 @@ const App = () => {
     const mediaRecorder = useRef(null);
     const audioChunks = useRef([]);
 
+    const [audioSrc, setAudioSrc] = useState(null);
+    const [transcript, setTranscript] = useState('');
+    const [messages, setMessages] = useState('');
+
     const startRecording = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder.current = new MediaRecorder(stream);
@@ -55,13 +59,20 @@ const App = () => {
             body: formData
         });
 
-        const responseData = await response.json();
-        if (responseData) {
-            playAudio(responseData.audioData);
-        } else {
-            alert('Upload failed');
+        if (!response.ok) {
+            console.error('Error uploading audio');
+            return;
         }
-        setSessionStateBase64(responseData.sessionStateBase64);
+
+        const data = await response.json();
+
+        const { audio, inputTranscript, messages } = data;
+
+        setAudioSrc(`data:audio/mpeg;base64,${audio}`);
+        setTranscript(inputTranscript);
+        setMessages(messages);
+
+        playAudio(audio);  // Play the audio
     };
 
     const playAudio = (audioBase64) => {
@@ -90,6 +101,9 @@ const App = () => {
             <button onClick={uploadAudio} disabled={!audioBlob}>
                 Upload Audio
             </button>
+            {audioSrc && <audio controls src={audioSrc}></audio>}
+            {transcript && <p>Transcript: {transcript}</p>}
+            {messages && <p>Messages: {messages}</p>}
         </div>
     );
 };
