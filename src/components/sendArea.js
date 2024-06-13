@@ -3,10 +3,11 @@ import AudioRecorder from './audioRecorder';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import Stopwatch from './stopwatch';
+import Wave from './siriWave';
 
 
 const SendArea = (props) => {
-    const { onSendMessage } = props;
+    const { onSendMessage, setAudioMessages, toggleSpinner } = props;
     const [isRecording, setIsRecording] = useState(false);
     const [inputText, setInputText] = useState('');
     const handleChange = (e) => {
@@ -31,11 +32,12 @@ const SendArea = (props) => {
     return (
         <div className="msg-box">
             {(isRecording && isRecording == true) ? (
-                <div className="recording-indicator d-flex">
-                    <div>Recording...
-                    </div>
-                    <div className='ml-1'><Stopwatch />
-                    </div></div>
+                // <div className="recording-indicator d-flex">
+                //     <div>Recording...
+                //     </div>
+                //     <div className='ml-1'><Stopwatch />
+                //     </div></div>
+                <Wave />
             ) : (
                 <input
                     type="text"
@@ -49,14 +51,11 @@ const SendArea = (props) => {
 
             {(inputText && inputText.length >= 1) ? (
                 <span className="btn-group" onClick={handleSend}>
-                    {/* <i>
-                        <img className='send' src='/images/send-icon.png' alt="send icon" />
-                    </i> */}
                     <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faPaperPlane} />
                 </span>
             ) : (
                 <span className="btn-group">
-                    <AudioRecorder onSetIsRecording={onSetIsRecording} />
+                    <AudioRecorder setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSetIsRecording={onSetIsRecording} />
                 </span>
             )}
 

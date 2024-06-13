@@ -1,113 +1,163 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons';
 
 const AudioRecorder = (props) => {
-    const { onSetIsRecording } = props;
-    const [isRecording, setIsRecording] = useState(false);
-    const [recorder, setRecorder] = useState(null);
-    const [audioChunks, setAudioChunks] = useState([]);
-    const [recordings, setRecordings] = useState([]);
+    const { onSetIsRecording, setAudioMessages, toggleSpinner } = props;
+
+    const [recording, setRecording] = useState(false);
+    const [recorded, setRecorded] = useState(false);
+    const [sessionStateBase64, setSessionStateBase64] = useState(null);
+    const [audioBlob, setAudioBlob] = useState(null);
+    const mediaRecorder = useRef(null);
+    const audioChunks = useRef([]);
     const mediaStreamRef = useRef(null);
 
+    const [audioSrc, setAudioSrc] = useState(null);
+    const [audioDuration, setAudioDuration] = useState(null);
+
     const handleStartRecording = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaStreamRef.current = stream;
-        const newRecorder = new MediaRecorder(stream);
-        newRecorder.ondataavailable = event => {
-            if (event.data.size > 0) {
-                setAudioChunks(prev => [...prev, event.data]);
-            }
-        };
-        newRecorder.start();
-        setRecorder(newRecorder);
-        setIsRecording(true);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaStreamRef.current = stream;
+            mediaRecorder.current = new MediaRecorder(stream);
+            audioChunks.current = [];
+
+            mediaRecorder.current.ondataavailable = event => {
+                audioChunks.current.push(event.data);
+            };
+
+            mediaRecorder.current.onstop = () => {
+                const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
+                setAudioBlob(audioBlob);
+                setRecorded(true);
+            };
+
+            mediaRecorder.current.start();
+            setRecording(true);
+            onSetIsRecording(true);
+        } catch (err) {
+            console.error('Error starting recording', err);
+        }
     };
 
     const handleStopRecording = () => {
-        recorder.stop();
-        mediaStreamRef.current.getTracks().forEach(track => track.stop());
-        setIsRecording(false);
+        if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+            mediaRecorder.current.stop();
+        }
+        if (mediaStreamRef.current) {
+            mediaStreamRef.current.getTracks().forEach(track => track.stop());
+        }
+        setRecording(false);
+        onSetIsRecording(false);
+    };
+
+    const deleteRecording = () => {
+        handleStopRecording();
+        setRecorded(false);
+        setAudioBlob(null);
+        setAudioSrc(null);
     };
 
     const handleToggleRecording = () => {
-        if (isRecording) {
+        if (recording) {
             handleStopRecording();
-            onSetIsRecording(false);
         } else {
             handleStartRecording();
-            onSetIsRecording(true);
         }
     };
 
-    useEffect(() => {
-        if (!isRecording && audioChunks.length > 0) {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            const url = URL.createObjectURL(audioBlob);
-            setRecordings(prev => [...prev, { url, blob: audioBlob }]);
-            setAudioChunks([]);
+    const uploadAudio = async () => {
+        if (!audioBlob) {
+            alert('No audio recorded');
+            return;
         }
-    }, [isRecording, audioChunks]);
 
-    const handlePlayAudio = (url) => {
-        const audio = new Audio(url);
+        const audioFile = new File([audioBlob], 'audio.wav', { type: 'audio/wav' });
+
+        const formData = new FormData();
+        formData.append('audio', audioFile);
+        // if (sessionStateBase64 && Object.keys(sessionStateBase64).length >= 1) {
+        // formData.append('sessionStateBase64', sessionStateBase64);
+        // }
+
+        toggleSpinner(true);
+
+        // Send the audio and session state to your Node.js backend
+        const response = await fetch('http://localhost:8080/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            console.error('Error uploading audio');
+            toggleSpinner(false);
+            return;
+        }
+
+        const data = await response.json();
+
+        const { audio, inputTranscript, messages, sessionState } = data;
+
+        setAudioSrc(`data:audio/mpeg;base64,${audio}`);
+        setRecorded(false);
+        setRecording(false);
+        onSetIsRecording(false);
+        setAudioMessages(messages, inputTranscript);
+        playAudio(audio);  // Play the audio
+        calculateAudioDuration(audio);
+        setSessionStateBase64(sessionState);
+    };
+
+    const playAudio = (audioBase64) => {
+        const audioArrayBuffer = base64ToArrayBuffer(audioBase64);
+        const audioBlob = new Blob([audioArrayBuffer], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
         audio.play();
     };
 
-    const handleSendAudio = async (blob) => {
-        const formData = new FormData();
-        formData.append('audio', blob, 'recording.wav');
-
-        try {
-            const response = await fetch('http://localhost:5000/upload', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (response.ok) {
-                console.log('Audio file successfully sent to the server');
-            } else {
-                console.error('Failed to send audio file');
-            }
-        } catch (error) {
-            console.error('Error sending audio file:', error);
+    const base64ToArrayBuffer = (base64) => {
+        const binaryString = atob(base64);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
         }
+        return bytes.buffer;
     };
 
-    const handleDeleteRecording = (index) => {
-        setRecordings(prev => prev.filter((_, i) => i !== index));
+    const calculateAudioDuration = (audioBase64) => {
+        const audioArrayBuffer = base64ToArrayBuffer(audioBase64);
+        const audioBlob = new Blob([audioArrayBuffer], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.onloadedmetadata = () => {
+            setAudioDuration(audio.duration * 1000); // duration in milliseconds
+        };
     };
 
     return (
         <div className="audio-recorder">
-            <i onClick={handleToggleRecording}>
-                {isRecording ? (
-                    <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
-                ) : (
+            <i title={recording ? "Stop" : "Record"} onClick={handleToggleRecording} tool>
+                {(recording && !recorded) && (
+                    <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faStop} />
+                )}
+                {(!recording && !recorded) && (
                     <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faMicrophone} />
                 )}
             </i>
-            {isRecording && (
-                <i onClick={handleToggleRecording}>
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
-                </i>
+            {(recorded && !recording) && (
+                <>
+                    <i title='Delete' onClick={deleteRecording}>
+                        <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
+                    </i>
+                    <i title='Send' onClick={uploadAudio}>
+                        <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
+                    </i>
+                </>
             )}
-            {/* <div className="recordings-list">
-                {recordings.map((recording, index) => (
-                    <div key={index} className="recording-item">
-                        <audio controls src={recording.url}></audio>
-                        <i onClick={() => handlePlayAudio(recording.url)}>
-                            <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faPlay} />
-                        </i>
-                        <i onClick={() => handleSendAudio(recording.blob)}>
-                            <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faPaperPlane} />
-                        </i>
-                        <i onClick={() => handleDeleteRecording(index)}>
-                            <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
-                        </i>
-                    </div>
-                ))}
-            </div> */}
+            {audioSrc && <audio style={{ display: 'none' }} controls src={audioSrc}></audio>}
         </div>
     );
 };
