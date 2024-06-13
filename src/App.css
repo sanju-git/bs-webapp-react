@@ -58,7 +58,7 @@ body {
 div.app {
   position: relative;
   width: 40%;
-  height: 100vh;
+  height: 92vh;
   background: #003c71;
 }
 
@@ -85,7 +85,7 @@ div.app:after {
   z-index: 0;
 }
 
-div.app div.head {
+div.head {
   z-index: 1;
   position: relative;
   width: 100%;

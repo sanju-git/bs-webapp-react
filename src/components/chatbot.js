@@ -50,7 +50,7 @@ const Chatbot = () => {
     return (
         <div className="container d-flex">
             <div className="app">
-                <div className="d-flex align-items-center justify-content-center head clearfix">
+                {/* <div className="d-flex align-items-center justify-content-center head clearfix">
                     <div className="friday">
                         <h2>F.R.I.D.A.Y</h2>
                     </div>
@@ -60,7 +60,8 @@ const Chatbot = () => {
                     <div>
                         <img className='logo' src='/images/bs.png' alt="logo" />
                     </div>
-                </div>
+                </div> */}
+                
                 <div className="body wrapper">
                     <div className="chat-messages">
                         <div className="chat">
