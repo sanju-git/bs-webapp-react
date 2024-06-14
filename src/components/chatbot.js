@@ -3,6 +3,7 @@ import SendArea from './sendArea';
 import Tableau from './tableau';
 import SiriWave from 'siriwave';
 import Wave from './siriWave';
+import IronManArc from './ironManArc';
 
 const Chatbot = () => {
 
@@ -98,6 +99,9 @@ const Chatbot = () => {
                     </div>
                 </div>
             </div>
+            {(!reportURL || reportURL.length == 0) && (
+                <IronManArc />
+            )}
             {(reportURL && reportURL.length >= 1) && (
                 <div style={{ width: '60%' }}>
                     <div>
