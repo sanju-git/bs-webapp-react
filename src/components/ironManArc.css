@@ -23,11 +23,6 @@
     transform-origin: center;
 }
 
-.svg-frame svg {
-    /* Inner shadow for a glowing effect */
-    filter: drop-shadow(0 0 4px #113983) drop-shadow(0 0 8px rgba(255, 128, 0, 0.3));
-}
-
 /* You can remove these commented hover effects if not needed */
 .svg-frame:hover svg {
     transform: rotate(-80deg) skew(30deg) translateX(calc(45px * var(--i))) translateY(calc(-35px * var(--i)));

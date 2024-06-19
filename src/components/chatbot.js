@@ -1,15 +1,28 @@
 import React, { useState } from 'react';
 import SendArea from './sendArea';
 import Tableau from './tableau';
-import SiriWave from 'siriwave';
-import Wave from './siriWave';
 import IronManArc from './ironManArc';
+import BannerText from './bannerText';
+
+const bannerTexts = [
+    "Friday: Because Everyone Deserves Their Own Superhero Assistant",
+    "Why Talk to Yourself When You Can Talk to Friday?",
+    "Friday: The Assistant Tony Stark Would Be Jealous Of",
+    "Introducing Friday: Making You Feel Like Tony Stark, One Chat at a Time",
+    "Need a Genius Assistant? Just Ask Friday. Iron Suit Not Included.",
+    "Friday: More Reliable Than Tony Stark Before His Morning Coffee",
+    "Feeling Like a Billionaire Genius Yet? You Will with Friday!",
+    "Friday: Turning Mundane Tasks into Superhero Feats",
+    "Get Friday: Because Even Iron Man Needs a Break Sometimes",
+    "Friday: Helping You Avoid Those 'Stark' Realizations"
+];
 
 const Chatbot = () => {
 
     const [messages, setMessages] = useState([]);
     const [showSpinner, setShowSpinner] = useState(false);
     const [reportURL, setReportURL] = useState('');
+    const [showArcSpinner, setShowArcSpinner] = useState(false);
 
 
     const setAudioMessages = (messages, inputTranscript) => {
@@ -17,11 +30,13 @@ const Chatbot = () => {
 
         messages.forEach(message => {
             if (message['content'].startsWith("Here is the information you requested")) {
+                setShowArcSpinner(true);
                 const regex = /https:[^"]+/;
                 const match = message['content'].match(regex);
                 if (match) {
                     setReportURL(match[0]);
                     setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
+                    setShowArcSpinner(false);
                 }
             } else {
                 setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
@@ -99,20 +114,25 @@ const Chatbot = () => {
                     </div>
                 </div>
             </div>
-            {(!reportURL || reportURL.length == 0) && (
-                <IronManArc />
-            )}
-            {(reportURL && reportURL.length >= 1) && (
-                <div style={{ width: '60%' }}>
-                    <div>
-                        <Tableau iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
+            <div style={{ width: '60%' }}>
+
+                {(!reportURL || reportURL.length == 0) && (showArcSpinner) ? (
+                    <IronManArc />
+                ) : (
+                    <div className='d-flex align-items-center justify-content-center' style={{ height: '92vh' }}>
+                        <div className='bannertext-wrapper'>
+                            <BannerText />
+                        </div>
                     </div>
-                    {/* 
-            <tableau-viz id="tableauViz"
-                src='https://public.tableau.com/app/profile/aarthe.radhakrishnan/viz/TopNProducts_17168006299450/TopNproductsbySalesVolume?publish=yes'>
-            </tableau-viz> */}
-                </div>
-            )}
+                )}
+                {(reportURL && reportURL.length >= 1) && (
+                    <div style={{ width: '60%' }}>
+                        <div>
+                            <Tableau iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
+                        </div>
+                    </div>
+                )}
+            </div>
 
         </div>
     );
