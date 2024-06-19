@@ -25,7 +25,7 @@ const Tableau = (props) => {
         }
 
         const script = document.createElement('script');
-        script.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        script.src = 'https://tableau.bsci.com/javascripts/api/viz_v1.js';
         script.async = true;
         script.onload = () => {
             const divElement = document.getElementById('viz1716875080181');
