@@ -2,7 +2,7 @@ import React from 'react';
 import './ironManArc.css';
 
 const IronManArc = () => (
-    <div style={{ width: "100%" }} className='d-flex align-items-center justify-content-center'>
+    <div style={{ width: "100%",height:"92vh" }} className='d-flex align-items-center justify-content-center'>
         <div className="svg-frame">
             <svg style={{ "--i": 0, "--j": 0 }}>
                 <g id="out1">

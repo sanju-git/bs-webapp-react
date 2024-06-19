@@ -45,8 +45,9 @@ const Chatbot = () => {
                 }
             } else {
                 setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+                setShowArcSpinner(false);
             }
-            showSpinner(false);
+        setShowSpinner(false);
             // setShowArcSpinner(false);
         })
 
@@ -65,7 +66,7 @@ const Chatbot = () => {
             text: inputText,
             sessionId: 290524,
         };
-
+        setShowArcSpinner(true);
         try {
             const res = await fetch('http://localhost:8080/lex', {
                 method: 'POST',
@@ -92,15 +93,16 @@ const Chatbot = () => {
                     }
                     let tableauURL = responseObject.tableauURL;
                     if(tableauURL && tableauURL.length>=1){
-                        setShowArcSpinner(true);
+                        
                         setReportURL(tableauURL);
                         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
                     }
                 }
                 else {
                     setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+                    setShowArcSpinner(false);
                 }
-                showSpinner(false);
+                setShowSpinner(false);
             })   
         } catch (error) {
             console.error('Error:', error);
@@ -125,11 +127,14 @@ const Chatbot = () => {
                                     </div>
                                 ))}
                                 {showSpinner && (
-                                    <div><br /><div className="loader"></div></div>
+                                    <><br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div className="loader"></div></>
                                 )}
                             </div>
                             <SendArea setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSendMessage={sendMessage} />
-
                         </div>
                     </div>
                 </div>
@@ -139,6 +144,7 @@ const Chatbot = () => {
                 {((!reportURL || reportURL.length == 0) && (showArcSpinner)) && (
                     <IronManArc />
                 ) }
+                 {/* <IronManArc /> */}
                 {((!reportURL || reportURL.length == 0) && (!showArcSpinner)) && (
                     <div className='d-flex align-items-center justify-content-center' style={{ height: '92vh' }}>
                         <div className='bannertext-wrapper'>

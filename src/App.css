@@ -332,7 +332,8 @@ div.chat div.chat-content>span {
 
 div.chat div.chat-content span.friend {
   position: relative;
-  max-width: 250px;
+  /* max-width: 250px; */
+  max-width: max-content;
   display: inline-block;
   background: #003c71;
   padding: 10px;
@@ -415,7 +416,8 @@ div.chat div.chat-content span.friend span.time {
 div.chat div.chat-content span.you {
   position: relative;
   float: right;
-  max-width: 250px;
+  /* max-width: 250px; */
+  max-width: max-content;
   background: #fff;
   display: inline-block;
   padding: 10px;
