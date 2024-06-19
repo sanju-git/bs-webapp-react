@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 const Tableau = (props) => {
-    const { reportURL, iframeWidth = '100%', iframeHeight = '100vh' } = props;
+    const { reportURL, iframeWidth = '100%', iframeHeight = '100vh',onSetShowArcSpinner } = props;
     const [reportName, setReportName] = useState('');
     const [filterArray, setFilterArray] = useState([]);
 
@@ -43,6 +43,7 @@ const Tableau = (props) => {
             vizElement.style.width = iframeWidth;
             vizElement.style.height = iframeHeight;
         };
+        onSetShowArcSpinner(false);
         document.body.appendChild(script);
 
         return () => {
