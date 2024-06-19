@@ -6,11 +6,12 @@ const Tableau = (props) => {
     const [filterArray, setFilterArray] = useState([]);
 
     useEffect(() => {
-        const regex = /viz\/([^?]+)/;
-        const match = reportURL.match(regex);
-        if (match && match[1]) {
-            setReportName(match[1]);
-        }
+        // const regex = /viz\/([^?]+)/;
+        // const match = reportURL.match(regex);
+        // if (match && match[1]) {
+        //     setReportName(match[1]);
+        // }
+        setReportName(reportURL);
 
         // Extract and split the query string
         const queryString = reportURL.split('?')[1];
