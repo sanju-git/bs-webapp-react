@@ -9,6 +9,16 @@ body {
   background: #F2F2F2;
 }
 
+#webpack-dev-server-client-overlay
+{
+display:none;
+}
+
+.app + div > div {
+  height: 100%;
+  width:100% !important
+}
+
 .wrapper {
   height: 80%;
 }
