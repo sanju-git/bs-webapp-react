@@ -68,8 +68,12 @@ display:none;
 div.app {
   position: relative;
   width: 40%;
-  height: 92vh;
-  background: #003c71;
+  height: 90vh;
+  background-image: url('../public/images/chat-bg-high.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
 }
 
 div.app:before {
@@ -494,7 +498,7 @@ div.msg-box span.btn-group {
 
 .logo {
   height: 42px;
-  width: 120px;
+  width: 350px;
 }
 
 .send {

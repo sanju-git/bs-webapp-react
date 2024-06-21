@@ -139,14 +139,14 @@ const Chatbot = () => {
                     </div>
                 </div>
             </div>
-            <div style={{ width: '60%' }}>
+            <div style={{ width: '60%',height:'90vh' }}>
 
                 {((!reportURL || reportURL.length == 0) && (showArcSpinner)) && (
                     <IronManArc />
                 ) }
                  {/* <IronManArc /> */}
                 {((!reportURL || reportURL.length == 0) && (!showArcSpinner)) && (
-                    <div className='d-flex align-items-center justify-content-center' style={{ height: '92vh' }}>
+                    <div className='d-flex align-items-center justify-content-center' style={{ height: '90vh' }}>
                         <div className='bannertext-wrapper'>
                             <BannerText />
                         </div>
