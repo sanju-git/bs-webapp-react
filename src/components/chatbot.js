@@ -24,32 +24,39 @@ const Chatbot = () => {
     const [reportURL, setReportURL] = useState('');
     const [showArcSpinner, setShowArcSpinner] = useState(false);
 
-    const onSetShowArcSpinner = (show)=>{
+    const onSetShowArcSpinner = (show) => {
         setShowArcSpinner(show);
     }
 
-    const setAudioMessages = (messages, inputTranscript) => {
+    const setAudioMessages = (messages, inputTranscript, reportURLResponse) => {
         setMessages(prevMessages => [...prevMessages, { text: inputTranscript, type: 'you' }]);
         messages.forEach(message => {
-            if (message['content'].startsWith("{\"strResponse\":")) {
-                let responseObject = JSON.parse(message['content']);
-                let strResponse = responseObject.strResponse;
-                if(strResponse && strResponse.length>=1){
-                    setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
-                }
-                let tableauURL = responseObject.tableauURL;
-                if(tableauURL && tableauURL.length>=1){
-                    setShowArcSpinner(true);
-                    setReportURL(tableauURL);
-                    setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
-                }
-            } else {
-                setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
-                setShowArcSpinner(false);
-            }
-        setShowSpinner(false);
+            // setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+            // if (message['content'].startsWith("{\"strResponse\":")) {
+            //     let responseObject = JSON.parse(message['content']);
+            //     let strResponse = responseObject.strResponse;
+            //     if(strResponse && strResponse.length>=1){
+            //         setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
+            //     }
+            //     let tableauURL = responseObject.tableauURL;
+            //     if(tableauURL && tableauURL.length>=1){
+            //         setShowArcSpinner(true);
+            //         setReportURL(tableauURL);
+            //         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
+            //     }
+            // } else {
+            //     setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+            //     setShowArcSpinner(false);
+            // }
+            setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+            setShowSpinner(false);
             // setShowArcSpinner(false);
         })
+
+        if (reportURLResponse && reportURLResponse.length >= 1) {
+            // setShowArcSpinner(true);
+            setReportURL(reportURLResponse);
+        }
 
         toggleSpinner(false);
     }
@@ -85,25 +92,34 @@ const Chatbot = () => {
                 //         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
                 //     }
                 // }
-                if (message['content'].startsWith("{\"strResponse\":")) {
-                    let responseObject = JSON.parse(message['content']);
-                    let strResponse = responseObject.strResponse;
-                    if(strResponse && strResponse.length>=1){
-                        setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
-                    }
-                    let tableauURL = responseObject.tableauURL;
-                    if(tableauURL && tableauURL.length>=1){
-                        
-                        setReportURL(tableauURL);
-                        setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
-                    }
-                }
-                else {
-                    setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
-                    setShowArcSpinner(false);
-                }
+                // if (message['content'].startsWith("{\"strResponse\":")) {
+                //     let responseObject = JSON.parse(message['content']);
+                //     let strResponse = responseObject.strResponse;
+                //     if (strResponse && strResponse.length >= 1) {
+                //         setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
+                //     }
+                //     let tableauURL = responseObject.tableauURL;
+                //     if (tableauURL && tableauURL.length >= 1) {
+
+                //         setReportURL(tableauURL);
+                //         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
+                //     }
+                // }
+                // else {
+                //     setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
+                //     setShowArcSpinner(false);
+                // }
+                setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
                 setShowSpinner(false);
-            })   
+                // setShowSpinner(false);
+            })
+
+            let reportURLResponse = data['sessionState']['sessionAttributes']['TableauURL'] || '';
+            if (reportURLResponse && reportURLResponse.length >= 1) {
+                // setShowArcSpinner(true);
+                setReportURL(reportURLResponse);
+            }
+
         } catch (error) {
             console.error('Error:', error);
         }
@@ -128,10 +144,10 @@ const Chatbot = () => {
                                 ))}
                                 {showSpinner && (
                                     <><br />
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <div className="loader"></div></>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <div className="loader"></div></>
                                 )}
                             </div>
                             <SendArea setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSendMessage={sendMessage} />
@@ -139,12 +155,12 @@ const Chatbot = () => {
                     </div>
                 </div>
             </div>
-            <div style={{ width: '60%',height:'90vh' }}>
+            <div style={{ width: '60%', height: '90vh' }}>
 
                 {((!reportURL || reportURL.length == 0) && (showArcSpinner)) && (
                     <IronManArc />
-                ) }
-                 {/* <IronManArc /> */}
+                )}
+                {/* <IronManArc /> */}
                 {((!reportURL || reportURL.length == 0) && (!showArcSpinner)) && (
                     <div className='d-flex align-items-center justify-content-center' style={{ height: '90vh' }}>
                         <div className='bannertext-wrapper'>
@@ -155,7 +171,7 @@ const Chatbot = () => {
                 {(reportURL && reportURL.length >= 1) && (
                     <div style={{ width: '60%' }}>
                         <div>
-                            <Tableau onSetShowArcSpinner = {onSetShowArcSpinner} iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
+                            <Tableau onSetShowArcSpinner={onSetShowArcSpinner} iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
                         </div>
                     </div>
                 )}

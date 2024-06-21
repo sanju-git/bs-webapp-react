@@ -103,7 +103,7 @@ const AudioRecorder = (props) => {
         setRecorded(false);
         setRecording(false);
         onSetIsRecording(false);
-        setAudioMessages(messages, inputTranscript);
+        setAudioMessages(messages, inputTranscript, sessionState['sessionAttributes']['TableauURL']);
         playAudio(audio);  // Play the audio
         calculateAudioDuration(audio);
         setSessionStateBase64(sessionState);
