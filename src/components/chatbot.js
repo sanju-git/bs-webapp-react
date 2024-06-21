@@ -23,8 +23,9 @@ const Chatbot = () => {
     const [showSpinner, setShowSpinner] = useState(false);
     const [reportURL, setReportURL] = useState('');
     const [showArcSpinner, setShowArcSpinner] = useState(false);
+    const [floatRight, setFloatRight] = useState(false);
 
-    const onSetShowArcSpinner = (show)=>{
+    const onSetShowArcSpinner = (show) => {
         setShowArcSpinner(show);
     }
 
@@ -34,11 +35,11 @@ const Chatbot = () => {
             if (message['content'].startsWith("{\"strResponse\":")) {
                 let responseObject = JSON.parse(message['content']);
                 let strResponse = responseObject.strResponse;
-                if(strResponse && strResponse.length>=1){
+                if (strResponse && strResponse.length >= 1) {
                     setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
                 }
                 let tableauURL = responseObject.tableauURL;
-                if(tableauURL && tableauURL.length>=1){
+                if (tableauURL && tableauURL.length >= 1) {
                     setShowArcSpinner(true);
                     setReportURL(tableauURL);
                     setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
@@ -47,15 +48,18 @@ const Chatbot = () => {
                 setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
                 setShowArcSpinner(false);
             }
-        setShowSpinner(false);
+            setShowSpinner(false);
             // setShowArcSpinner(false);
         })
 
-        toggleSpinner(false);
+        toggleSpinner(false, 'audioPrompt');
     }
 
-    const toggleSpinner = (show) => {
+    const toggleSpinner = (show, from) => {
         setShowSpinner(show);
+        if (from && from == 'audioPrompt') {
+            setFloatRight(show);
+        }
     }
 
     const sendMessage = async (inputText) => {
@@ -77,23 +81,15 @@ const Chatbot = () => {
             });
             const data = await res.json();
             data['messages'].forEach(message => {
-                // if (message['content'].startsWith("Here is the information you requested")) {
-                //     const regex = /https:[^"]+/;
-                //     const match = message['content'].match(regex);
-                //     if (match) {
-                //         setReportURL(match[0]);
-                //         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
-                //     }
-                // }
                 if (message['content'].startsWith("{\"strResponse\":")) {
                     let responseObject = JSON.parse(message['content']);
                     let strResponse = responseObject.strResponse;
-                    if(strResponse && strResponse.length>=1){
+                    if (strResponse && strResponse.length >= 1) {
                         setMessages(prevMessages => [...prevMessages, { text: strResponse, type: 'friend' }]);
                     }
                     let tableauURL = responseObject.tableauURL;
-                    if(tableauURL && tableauURL.length>=1){
-                        
+                    if (tableauURL && tableauURL.length >= 1) {
+
                         setReportURL(tableauURL);
                         setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
                     }
@@ -103,7 +99,7 @@ const Chatbot = () => {
                     setShowArcSpinner(false);
                 }
                 setShowSpinner(false);
-            })   
+            })
         } catch (error) {
             console.error('Error:', error);
         }
@@ -128,13 +124,13 @@ const Chatbot = () => {
                                 ))}
                                 {showSpinner && (
                                     <><br />
-                                    <br />
-                                    <br />
-                                    <br />
-                                    <div className="loader"></div></>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <div style={{ float: floatRight ? 'right' : 'left' }} className="loader"></div></>
                                 )}
                             </div>
-                            <SendArea setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSendMessage={sendMessage} />
+                            <SendArea setAudioMessages={setAudioMessages} showSpinner={showSpinner} toggleSpinner={toggleSpinner} onSendMessage={sendMessage} />
                         </div>
                     </div>
                 </div>
@@ -143,8 +139,8 @@ const Chatbot = () => {
 
                 {((!reportURL || reportURL.length == 0) && (showArcSpinner)) && (
                     <IronManArc />
-                ) }
-                 {/* <IronManArc /> */}
+                )}
+                {/* <IronManArc /> */}
                 {((!reportURL || reportURL.length == 0) && (!showArcSpinner)) && (
                     <div className='d-flex align-items-center justify-content-center' style={{ height: '92vh' }}>
                         <div className='bannertext-wrapper'>
@@ -155,7 +151,7 @@ const Chatbot = () => {
                 {(reportURL && reportURL.length >= 1) && (
                     <div style={{ width: '60%' }}>
                         <div>
-                            <Tableau onSetShowArcSpinner = {onSetShowArcSpinner} iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
+                            <Tableau onSetShowArcSpinner={onSetShowArcSpinner} iframeWidth="100%" iframeHeight="100vh" reportURL={reportURL} />
                         </div>
                     </div>
                 )}

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons';
 
 const AudioRecorder = (props) => {
-    const { onSetIsRecording, setAudioMessages, toggleSpinner } = props;
+    const { onSetIsRecording, setAudioMessages, toggleSpinner, showSpinner } = props;
 
     const [recording, setRecording] = useState(false);
     const [recorded, setRecorded] = useState(false);
@@ -81,7 +81,7 @@ const AudioRecorder = (props) => {
         // formData.append('sessionStateBase64', sessionStateBase64);
         // }
 
-        toggleSpinner(true);
+        toggleSpinner(true, 'audioPrompt');
 
         // Send the audio and session state to your Node.js backend
         const response = await fetch('http://localhost:8080/upload', {
@@ -91,7 +91,7 @@ const AudioRecorder = (props) => {
 
         if (!response.ok) {
             console.error('Error uploading audio');
-            toggleSpinner(false);
+            toggleSpinner(false, 'audioPrompt');
             return;
         }
 
@@ -139,7 +139,7 @@ const AudioRecorder = (props) => {
 
     return (
         <div className="audio-recorder">
-            <i title={recording ? "Stop" : "Record"} onClick={handleToggleRecording} tool>
+            <i className={showSpinner ? 'disabled' : ''} title={recording ? "Stop" : "Record"} onClick={handleToggleRecording} tool>
                 {(recording && !recorded) && (
                     <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faStop} />
                 )}
@@ -149,10 +149,10 @@ const AudioRecorder = (props) => {
             </i>
             {(recorded && !recording) && (
                 <>
-                    <i title='Delete' onClick={deleteRecording}>
+                    <i className={showSpinner ? 'disabled' : ''} title='Delete' onClick={deleteRecording}>
                         <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
                     </i>
-                    <i title='Send' onClick={uploadAudio}>
+                    <i className={showSpinner ? 'disabled' : ''} title='Send' onClick={uploadAudio}>
                         <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
                     </i>
                 </>
