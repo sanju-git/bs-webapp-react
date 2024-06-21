@@ -42,7 +42,6 @@ const Chatbot = () => {
                 if (tableauURL && tableauURL.length >= 1) {
                     setShowArcSpinner(true);
                     setReportURL(tableauURL);
-                    setMessages(prevMessages => [...prevMessages, { text: "Report is being displayed on the side.", type: 'friend' }]);
                 }
             } else {
                 setMessages(prevMessages => [...prevMessages, { text: message['content'], type: 'friend' }]);
