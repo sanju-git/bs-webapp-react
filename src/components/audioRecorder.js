@@ -3,18 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons';
 
 const AudioRecorder = (props) => {
-    const { onSetIsRecording, setAudioMessages, toggleSpinner } = props;
+    const { onSetIsRecording, setAudioMessages, toggleSpinner, onSetShowArcSpinner, showSpinner, sessionId } = props;
 
     const [recording, setRecording] = useState(false);
     const [recorded, setRecorded] = useState(false);
-    const [sessionStateBase64, setSessionStateBase64] = useState(null);
     const [audioBlob, setAudioBlob] = useState(null);
     const mediaRecorder = useRef(null);
     const audioChunks = useRef([]);
     const mediaStreamRef = useRef(null);
 
     const [audioSrc, setAudioSrc] = useState(null);
-    const [audioDuration, setAudioDuration] = useState(null);
 
     const handleStartRecording = async () => {
         try {
@@ -77,36 +75,45 @@ const AudioRecorder = (props) => {
 
         const formData = new FormData();
         formData.append('audio', audioFile);
-        // if (sessionStateBase64 && Object.keys(sessionStateBase64).length >= 1) {
-        // formData.append('sessionStateBase64', sessionStateBase64);
-        // }
+        formData.append('sessionId', sessionId);
 
-        toggleSpinner(true);
+        toggleSpinner(true, 'audioPrompt');
+        onSetShowArcSpinner(true);
 
-        // Send the audio and session state to your Node.js backend
-        const response = await fetch('http://localhost:8080/upload', {
-            method: 'POST',
-            body: formData
-        });
+        try {
+            // Send the audio and session state to your Node.js backend
+            const response = await fetch('http://localhost:8080/upload', {
+                method: 'POST',
+                body: formData
+            });
 
-        if (!response.ok) {
-            console.error('Error uploading audio');
-            toggleSpinner(false);
-            return;
+            if (!response.ok) {
+                console.error('Error uploading audio');
+                toggleSpinner(false, 'audioPrompt');
+                onSetShowArcSpinner(false);
+                return;
+            }
+
+            const data = await response.json();
+
+            const { audio, inputTranscript, messages, sessionState } = data;
+
+            setAudioSrc(`data:audio/mpeg;base64,${audio}`);
+            setRecorded(false);
+            setRecording(false);
+            onSetIsRecording(false);
+            toggleSpinner(false, 'audioPrompt');
+            onSetShowArcSpinner(false);
+            setAudioMessages(false, messages, inputTranscript, sessionState['sessionAttributes']['TableauURL']);
+            playAudio(audio);  // Play the audio
+        } catch (error) {
+            setRecorded(false);
+            setRecording(false);
+            onSetIsRecording(false);
+            toggleSpinner(false, 'audioPrompt');
+            onSetShowArcSpinner(false);
+            setAudioMessages(true)
         }
-
-        const data = await response.json();
-
-        const { audio, inputTranscript, messages, sessionState } = data;
-
-        setAudioSrc(`data:audio/mpeg;base64,${audio}`);
-        setRecorded(false);
-        setRecording(false);
-        onSetIsRecording(false);
-        setAudioMessages(messages, inputTranscript, sessionState['sessionAttributes']['TableauURL']);
-        playAudio(audio);  // Play the audio
-        calculateAudioDuration(audio);
-        setSessionStateBase64(sessionState);
     };
 
     const playAudio = (audioBase64) => {
@@ -127,16 +134,6 @@ const AudioRecorder = (props) => {
         return bytes.buffer;
     };
 
-    const calculateAudioDuration = (audioBase64) => {
-        const audioArrayBuffer = base64ToArrayBuffer(audioBase64);
-        const audioBlob = new Blob([audioArrayBuffer], { type: 'audio/mpeg' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioUrl);
-        audio.onloadedmetadata = () => {
-            setAudioDuration(audio.duration * 1000); // duration in milliseconds
-        };
-    };
-
     return (
         <div className="audio-recorder">
             <i title={recording ? "Stop" : "Record"} onClick={handleToggleRecording} tool>
@@ -149,10 +146,10 @@ const AudioRecorder = (props) => {
             </i>
             {(recorded && !recording) && (
                 <>
-                    <i title='Delete' onClick={deleteRecording}>
+                    <i className={showSpinner ? 'disabled' : ''} title='Delete' onClick={deleteRecording}>
                         <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
                     </i>
-                    <i title='Send' onClick={uploadAudio}>
+                    <i className={showSpinner ? 'disabled' : ''} title='Send' onClick={uploadAudio}>
                         <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
                     </i>
                 </>

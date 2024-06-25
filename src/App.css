@@ -9,14 +9,13 @@ body {
   background: #F2F2F2;
 }
 
-#webpack-dev-server-client-overlay
-{
-display:none;
+#webpack-dev-server-client-overlay {
+  display: none;
 }
 
-.app + div > div {
+.app+div>div {
   height: 100%;
-  width:100% !important
+  width: 100% !important
 }
 
 .wrapper {
@@ -626,4 +625,10 @@ div.msg-box span.btn-group {
 
 .ml-1 {
   margin-left: 10px;
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
 }
