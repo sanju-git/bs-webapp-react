@@ -6,13 +6,13 @@ const TableauEmbed = ({ reportURL }) => {
         const options = {
             hideTabs: true,
             width: '100%',
-            height: '800px',
+            height: '90vh',
         };
 
         const vizContainer = document.getElementById('tableauViz');
         let viz = new window.tableau.Viz(vizContainer, vizUrl, options);
 
-        return () => viz.dispose(); // Clean up Tableau Viz object
+        return () => viz.dispose();
     }, [reportURL]);
 
     return <div id="tableauViz"></div>;

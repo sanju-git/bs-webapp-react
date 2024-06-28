@@ -1,18 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleArrowUp, faMicrophone, faPlay, faTrash, faPaperPlane, faStop } from '@fortawesome/free-solid-svg-icons';
+import { faCircleArrowUp, faMicrophone, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const AudioRecorder = (props) => {
     const { onSetIsRecording, setAudioMessages, toggleSpinner, onSetShowArcSpinner, showSpinner, sessionId } = props;
 
     const [recording, setRecording] = useState(false);
-    const [recorded, setRecorded] = useState(false);
     const [audioBlob, setAudioBlob] = useState(null);
     const mediaRecorder = useRef(null);
     const audioChunks = useRef([]);
     const mediaStreamRef = useRef(null);
-
-    const [audioSrc, setAudioSrc] = useState(null);
 
     const handleStartRecording = async () => {
         try {
@@ -25,12 +22,6 @@ const AudioRecorder = (props) => {
                 audioChunks.current.push(event.data);
             };
 
-            mediaRecorder.current.onstop = () => {
-                const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
-                setAudioBlob(audioBlob);
-                setRecorded(true);
-            };
-
             mediaRecorder.current.start();
             setRecording(true);
             onSetIsRecording(true);
@@ -40,38 +31,39 @@ const AudioRecorder = (props) => {
     };
 
     const handleStopRecording = () => {
-        if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
-            mediaRecorder.current.stop();
-        }
-        if (mediaStreamRef.current) {
-            mediaStreamRef.current.getTracks().forEach(track => track.stop());
-        }
-        setRecording(false);
-        onSetIsRecording(false);
+        return new Promise((resolve) => {
+            if (mediaRecorder.current && mediaRecorder.current.state !== 'inactive') {
+                mediaRecorder.current.onstop = () => {
+                    const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' });
+                    setAudioBlob(audioBlob);
+                    resolve(audioBlob);
+                };
+                mediaRecorder.current.stop();
+            } else {
+                resolve(null);
+            }
+            if (mediaStreamRef.current) {
+                mediaStreamRef.current.getTracks().forEach(track => track.stop());
+            }
+            setRecording(false);
+            onSetIsRecording(false);
+        });
     };
 
     const deleteRecording = () => {
-        handleStopRecording();
-        setRecorded(false);
-        setAudioBlob(null);
-        setAudioSrc(null);
-    };
-
-    const handleToggleRecording = () => {
-        if (recording) {
-            handleStopRecording();
-        } else {
-            handleStartRecording();
-        }
+        handleStopRecording().then(() => {
+            setAudioBlob(null);
+        });
     };
 
     const uploadAudio = async () => {
-        if (!audioBlob) {
-            alert('No audio recorded');
+        const blob = await handleStopRecording();
+        if (!blob) {
+            console.error('No audio recorded');
             return;
         }
 
-        const audioFile = new File([audioBlob], 'audio.wav', { type: 'audio/wav' });
+        const audioFile = new File([blob], 'audio.wav', { type: 'audio/wav' });
 
         const formData = new FormData();
         formData.append('audio', audioFile);
@@ -79,9 +71,9 @@ const AudioRecorder = (props) => {
 
         toggleSpinner(true, 'audioPrompt');
         onSetShowArcSpinner(true);
+        setAudioBlob(null)
 
         try {
-            // Send the audio and session state to your Node.js backend
             const response = await fetch('http://localhost:8080/upload', {
                 method: 'POST',
                 body: formData
@@ -98,21 +90,16 @@ const AudioRecorder = (props) => {
 
             const { audio, inputTranscript, messages, sessionState } = data;
 
-            setAudioSrc(`data:audio/mpeg;base64,${audio}`);
-            setRecorded(false);
-            setRecording(false);
-            onSetIsRecording(false);
+            setAudioBlob(null);
             toggleSpinner(false, 'audioPrompt');
             onSetShowArcSpinner(false);
             setAudioMessages(false, messages, inputTranscript, sessionState['sessionAttributes']['TableauURL']);
-            playAudio(audio);  // Play the audio
+            playAudio(audio);
         } catch (error) {
-            setRecorded(false);
-            setRecording(false);
-            onSetIsRecording(false);
+            console.error('Error during upload:', error);
             toggleSpinner(false, 'audioPrompt');
             onSetShowArcSpinner(false);
-            setAudioMessages(true)
+            setAudioMessages(true);
         }
     };
 
@@ -136,25 +123,21 @@ const AudioRecorder = (props) => {
 
     return (
         <div className="audio-recorder">
-            <i title={recording ? "Stop" : "Record"} onClick={handleToggleRecording} tool>
-                {(recording && !recorded) && (
-                    <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faStop} />
-                )}
-                {(!recording && !recorded) && (
-                    <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faMicrophone} />
-                )}
-            </i>
-            {(recorded && !recording) && (
+            {!recording && !audioBlob && (
+                <i title="Start Recording" className={showSpinner ? 'disabled' : ''} onClick={handleStartRecording}>
+                    <FontAwesomeIcon  style={{ color: "#133a84", height: 24, width: 24 }} icon={faMicrophone} />
+                </i>
+            )}
+            {recording && (
                 <>
-                    <i className={showSpinner ? 'disabled' : ''} title='Delete' onClick={deleteRecording}>
+                    <i title='Delete Recording' onClick={deleteRecording}>
                         <FontAwesomeIcon style={{ color: "#d11a2a", height: 24, width: 24 }} icon={faTrash} />
                     </i>
-                    <i className={showSpinner ? 'disabled' : ''} title='Send' onClick={uploadAudio}>
+                    <i title='Upload Recording' onClick={uploadAudio}>
                         <FontAwesomeIcon style={{ color: "#133a84", height: 24, width: 24 }} icon={faCircleArrowUp} />
                     </i>
                 </>
             )}
-            {audioSrc && <audio style={{ display: 'none' }} controls src={audioSrc}></audio>}
         </div>
     );
 };

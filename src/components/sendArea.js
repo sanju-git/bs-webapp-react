@@ -32,11 +32,6 @@ const SendArea = (props) => {
     return (
         <div className="msg-box">
             {(isRecording && isRecording == true) ? (
-                // <div className="recording-indicator d-flex">
-                //     <div>Recording...
-                //     </div>
-                //     <div className='ml-1'><Stopwatch />
-                //     </div></div>
                 <Wave />
             ) : (
                 <input
