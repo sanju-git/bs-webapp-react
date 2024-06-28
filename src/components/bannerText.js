@@ -5,7 +5,7 @@ const bannerTexts = [
     "Friday: Because Everyone Deserves Their Own Superhero Assistant",
     "Why Talk to Yourself When You Can Talk to Friday?",
     "Friday: The Assistant Tony Stark Would Be Jealous Of",
-    "Introducing Friday: Making You Feel Like Tony Stark, One Chat at a Time",
+    "Friday: Making You Feel Like Tony Stark, One Chat at a Time",
     "Need a Genius Assistant? Just Ask Friday. Iron Suit Not Included.",
     "Friday: More Reliable Than Tony Stark Before His Morning Coffee",
     "Feeling Like a Billionaire Genius Yet? You Will with Friday!",
