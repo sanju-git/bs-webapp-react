@@ -6,7 +6,7 @@ const TableauEmbed = ({ reportURL }) => {
         const options = {
             hideTabs: true,
             width: '100%',
-            height: '90vh',
+            height: '91.8vh',
         };
 
         const vizContainer = document.getElementById('tableauViz');
