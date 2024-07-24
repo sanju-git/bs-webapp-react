@@ -7,7 +7,7 @@ import Wave from './siriWave';
 
 
 const SendArea = (props) => {
-    const { onSendMessage, setAudioMessages, toggleSpinner } = props;
+    const { onSendMessage, setAudioMessages, toggleSpinner, onSetShowArcSpinner, showSpinner, sessionId } = props;
     const [isRecording, setIsRecording] = useState(false);
     const [inputText, setInputText] = useState('');
     const handleChange = (e) => {
@@ -32,11 +32,6 @@ const SendArea = (props) => {
     return (
         <div className="msg-box">
             {(isRecording && isRecording == true) ? (
-                // <div className="recording-indicator d-flex">
-                //     <div>Recording...
-                //     </div>
-                //     <div className='ml-1'><Stopwatch />
-                //     </div></div>
                 <Wave />
             ) : (
                 <input
@@ -55,7 +50,9 @@ const SendArea = (props) => {
                 </span>
             ) : (
                 <span className="btn-group">
-                    <AudioRecorder setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSetIsRecording={onSetIsRecording} />
+                    <AudioRecorder showSpinner={showSpinner} onSetShowArcSpinner={onSetShowArcSpinner} setAudioMessages={setAudioMessages} toggleSpinner={toggleSpinner} onSetIsRecording={onSetIsRecording}
+                        sessionId={sessionId}
+                    />
                 </span>
             )}
 
