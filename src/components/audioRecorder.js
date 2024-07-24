@@ -74,7 +74,7 @@ const AudioRecorder = (props) => {
         setAudioBlob(null)
 
         try {
-            const response = await fetch('http://localhost:8080/upload', {
+            const response = await fetch('https://friday.internal.dev.apps.bsci.com/upload', {
                 method: 'POST',
                 body: formData
             });
