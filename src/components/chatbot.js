@@ -65,7 +65,7 @@ const Chatbot = () => {
         };
         setShowArcSpinner(true);
         try {
-            const res = await fetch('https://friday.internal.dev.apps.bsci.com/lex', {
+            const res = await fetch('https://friday.internal.dev.apps.bsci.com/node/lex', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
