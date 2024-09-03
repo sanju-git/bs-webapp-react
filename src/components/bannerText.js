@@ -35,7 +35,7 @@ const BannerText = (props) => {
     let textArray = [];
     if (language === "English" || language === "" ) {
       textArray = bannerTexts; // Fix: Use the correct variable name 'bannerTexts'
-    } else if (language === "Japanese") {
+    } else if (language === "日本語") {
       textArray = japaneseBannerTexts;
     }
 

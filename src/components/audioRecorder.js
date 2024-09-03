@@ -6,6 +6,7 @@ import {
   faTrash,
   faCircleMinus,
 } from "@fortawesome/free-solid-svg-icons";
+import { NODE_URL } from "../constants/apiConstants";
 
 const AudioRecorder = (props) => {
   const {
@@ -91,8 +92,7 @@ const AudioRecorder = (props) => {
     setAudioBlob(null);
 
     try {
-      const response = await fetch('https://friday.internal.dev.apps.bsci.com/api/upload', {
-      // const response = await fetch("http://localhost:8080/api/upload", {
+      const response = await fetch(NODE_URL+"upload", {
         method: "POST",
         body: formData,
       });

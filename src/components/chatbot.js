@@ -5,6 +5,7 @@ import IronManArc from "./ironManArc";
 import BannerText from "./bannerText";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "./Modal";
+import { NODE_URL } from "../constants/apiConstants";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
@@ -17,7 +18,7 @@ const Chatbot = () => {
   const [floatRight, setFloatRight] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const chatContentRef = useRef(null);
-  const languageOptions = ["English", "Japanese"];
+  const languageOptions = ["English", "日本語"];
 
   const handleChange = (option) => {
     setLanguage(option); // Set selected option
@@ -129,8 +130,7 @@ const Chatbot = () => {
     };
     setShowArcSpinner(true);
     try {
-      const res = await fetch('https://friday.internal.dev.apps.bsci.com/api/lex', {
-      // const res = await fetch("http://localhost:8080/api/lex", {
+      const res = await fetch(NODE_URL+"lex", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
