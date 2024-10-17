@@ -61,6 +61,10 @@ const Chatbot = () => {
     setClearConfirmationModal(!showClearConfirmationModal);
   };
 
+  const showChat = () => {
+    setChatCollpase(!isChatCollapsed)
+  }
+
   const deleteConversations = (option) => {
     if (option) {
       setInitialState();
@@ -231,7 +235,7 @@ const Chatbot = () => {
             </div>
           </div>
         </div>
-        <div className="toggleLeft">
+        {!isChatCollapsed && (<div className="toggleLeft">
           <FontAwesomeIcon
             style={{ color: "#f2f2f2", height: 24, width: 24 }}
             icon={faCircleChevronLeft}
@@ -239,7 +243,7 @@ const Chatbot = () => {
               setChatCollpase(!isChatCollapsed);
             }}
           />
-        </div>
+        </div>)}
       </div>
       <div className="report-view">
         {(!reportURL || reportURL.length === 0) && showArcSpinner && (
@@ -262,6 +266,8 @@ const Chatbot = () => {
               iframeWidth="100%"
               iframeHeight="100vh"
               reportURL={reportURL}
+              showChat={showChat}
+              isChatCollapsed={isChatCollapsed}
             />
           </div>
         )}

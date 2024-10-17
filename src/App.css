@@ -31,15 +31,15 @@ body {
   justify-content: flex-end;
 }
 
-.ml-1{
+.ml-1 {
   margin-left: 10px;
 }
 
-.mt-1{
+.mt-1 {
   margin-top: 10px;
 }
 
-.text-center{
+.text-center {
   text-align: center;
 }
 
@@ -52,7 +52,7 @@ body {
   margin-left: 10px;
 }
 
-.mt-2{
+.mt-2 {
   margin-top: 20px !important;
 }
 
@@ -614,7 +614,7 @@ div.msg-box span.btn-group {
 /* red-hover-button */
 
 
-/* From Uiverse.io by adamgiebl */ 
+/* From Uiverse.io by adamgiebl */
 .red-hover-button {
   font-size: 13px;
   letter-spacing: 1px;
@@ -647,11 +647,13 @@ div.msg-box span.btn-group {
   z-index: -1;
 }
 
-.red-hover-button:hover, .red-hover-button:focus {
+.red-hover-button:hover,
+.red-hover-button:focus {
   color: white;
 }
 
-.red-hover-button:hover:before, .red-hover-button:focus:before {
+.red-hover-button:hover:before,
+.red-hover-button:focus:before {
   transition: 0.5s all ease;
   left: 0;
   right: 0;
@@ -683,10 +685,19 @@ div.msg-box span.btn-group {
 
 /* toggle */
 
-.toggleLeft{
+.toggleLeft {
   position: absolute;
   top: 48%;
   right: -8px;
+  opacity: 0.5;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.toggleRight {
+  position: absolute;
+  top: 48%;
+  left: 1px;
   opacity: 0.5;
   z-index: 999;
   cursor: pointer;
@@ -696,13 +707,13 @@ div.msg-box span.btn-group {
   opacity: 1;
 }
 
-.report-view{
+.report-view {
   width: 60%;
   transition: width 0.5s ease;
   display: inline-block;
   vertical-align: top;
 }
 
-div.app.collapsed + .report {
-  width: 100%;
+.app.collapsed+.report-view {
+  width: 100% !important;
 }

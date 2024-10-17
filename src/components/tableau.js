@@ -1,6 +1,8 @@
+import { faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect } from 'react';
 
-const TableauEmbed = ({ reportURL }) => {
+const TableauEmbed = ({ reportURL, showChat, isChatCollapsed }) => {
     useEffect(() => {
         const vizUrl = reportURL;
         const options = {
@@ -15,7 +17,15 @@ const TableauEmbed = ({ reportURL }) => {
         return () => viz.dispose();
     }, [reportURL]);
 
-    return <div id="tableauViz"></div>;
+    return (<>
+        {isChatCollapsed && (<div className="toggleRight">
+            <FontAwesomeIcon
+                style={{ color: "#a2a2a2", height: 24, width: 24 }}
+                icon={faCircleChevronRight}
+                onClick={() => showChat()}
+            />
+        </div>)}
+        <div id="tableauViz"></div></>);
 };
 
 export default TableauEmbed;
