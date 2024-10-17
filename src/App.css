@@ -102,7 +102,10 @@ div.app {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  transition: width 0.5s ease;
+  /* transition: width 0.5s ease; */
+  transition: width 0.7s cubic-bezier(0.645, 0.045, 0.355, 1), 
+  opacity 0.4s ease, 
+  padding 0.4s ease;
   display: inline-block;
   vertical-align: top;
 }
@@ -709,7 +712,7 @@ div.msg-box span.btn-group {
 
 .report-view {
   width: 60%;
-  transition: width 0.5s ease;
+  transition: width 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);;
   display: inline-block;
   vertical-align: top;
 }

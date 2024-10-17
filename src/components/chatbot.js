@@ -235,7 +235,7 @@ const Chatbot = () => {
             </div>
           </div>
         </div>
-        {!isChatCollapsed && (<div className="toggleLeft">
+        {(!isChatCollapsed && reportURL && reportURL.length >= 1) &&(<div className="toggleLeft">
           <FontAwesomeIcon
             style={{ color: "#f2f2f2", height: 24, width: 24 }}
             icon={faCircleChevronLeft}
