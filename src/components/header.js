@@ -5,8 +5,7 @@ const Header = () => {
 
     return (
 
-        <div className="d-flex align-items-center justify-content-center head clearfix">
-            <p>hi</p>            
+        <div className="d-flex align-items-center justify-content-center head clearfix">            
             <div style={{ marginTop: 7 }}>
                 <img className='logo' src={bs} alt="logo" />
             </div>
