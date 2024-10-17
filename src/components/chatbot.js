@@ -6,15 +6,15 @@ import BannerText from "./bannerText";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "./Modal";
 import { NODE_URL } from "../constants/apiConstants";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
   const [reportURL, setReportURL] = useState("");
   const [language, setLanguage] = useState("");
-  const [isChatCollapsed, setChatCollpase] = useState(false);
+  const [isChatCollapsed, setChatCollpase] = useState(true);
   const [showArcSpinner, setShowArcSpinner] = useState(false);
   const [showClearConfirmationModal, setClearConfirmationModal] =
     useState(false);
@@ -22,6 +22,34 @@ const Chatbot = () => {
   const [sessionId, setSessionId] = useState("");
   const chatContentRef = useRef(null);
   const languageOptions = ["English", "日本語"];
+  const [buttonPosition, setButtonPosition] = useState({
+    bottom: 10,
+    right: 10,
+  });
+  const [dragging, setDragging] = useState(false);
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    setDragging(true);
+    const rect = e.target.getBoundingClientRect();
+    setMouseOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (dragging) {
+      setButtonPosition({
+        bottom: window.innerHeight - e.clientY - mouseOffset.y,
+        right: window.innerWidth - e.clientX - mouseOffset.x,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(false);
+  };
 
   const handleChange = (option) => {
     setLanguage(option); // Set selected option
@@ -62,8 +90,8 @@ const Chatbot = () => {
   };
 
   const showChat = () => {
-    setChatCollpase(!isChatCollapsed)
-  }
+    setChatCollpase(!isChatCollapsed);
+  };
 
   const deleteConversations = (option) => {
     if (option) {
@@ -176,8 +204,39 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="container d-flex">
-      <div className={`app ${isChatCollapsed ? "collapsed" : ""}`}>
+    <div
+      className="container d-flex"
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
+      <div className={`report-view ${isChatCollapsed ? "expanded" : ""}`}>
+        {(!reportURL || reportURL.length === 0) && showArcSpinner && (
+          <IronManArc />
+        )}
+        {(!reportURL || reportURL.length === 0) && !showArcSpinner && (
+          <div
+            className="d-flex align-items-center justify-content-center"
+            style={{ height: "90vh" }}
+          >
+            <div className="bannertext-wrapper">
+              <BannerText language={language} />
+            </div>
+          </div>
+        )}
+        {reportURL && reportURL.length >= 1 && (
+          <div>
+            <Tableau
+              onSetShowArcSpinner={onSetShowArcSpinner}
+              iframeWidth="100%"
+              iframeHeight="100vh"
+              reportURL={reportURL}
+              showChat={showChat}
+              isChatCollapsed={isChatCollapsed}
+            />
+          </div>
+        )}
+      </div>
+      <div className={`app ${isChatCollapsed ? "collapsed" : "expanded"}`}>
         <div className="body wrapper">
           <div className="chat-messages">
             <div className="chat">
@@ -235,42 +294,24 @@ const Chatbot = () => {
             </div>
           </div>
         </div>
-        {(!isChatCollapsed && reportURL && reportURL.length >= 1) &&(<div className="toggleLeft">
-          <FontAwesomeIcon
-            style={{ color: "#f2f2f2", height: 24, width: 24 }}
-            icon={faCircleChevronLeft}
-            onClick={() => {
-              setChatCollpase(!isChatCollapsed);
-            }}
-          />
-        </div>)}
       </div>
-      <div className="report-view">
-        {(!reportURL || reportURL.length === 0) && showArcSpinner && (
-          <IronManArc />
-        )}
-        {(!reportURL || reportURL.length === 0) && !showArcSpinner && (
-          <div
-            className="d-flex align-items-center justify-content-center"
-            style={{ height: "90vh" }}
-          >
-            <div className="bannertext-wrapper">
-              <BannerText language={language} />
-            </div>
-          </div>
-        )}
-        {reportURL && reportURL.length >= 1 && (
-          <div>
-            <Tableau
-              onSetShowArcSpinner={onSetShowArcSpinner}
-              iframeWidth="100%"
-              iframeHeight="100vh"
-              reportURL={reportURL}
-              showChat={showChat}
-              isChatCollapsed={isChatCollapsed}
-            />
-          </div>
-        )}
+      <div
+        className="toggle-button"
+        onMouseDown={handleMouseDown}
+        style={{
+          bottom: `${buttonPosition.bottom}px`,
+          right: `${buttonPosition.right}px`,
+        }}
+      >
+        <FontAwesomeIcon
+          onClick={() => {
+            setChatCollpase(!isChatCollapsed);
+          }}
+          icon={faGear}
+          size="lg"
+          style={{ color: "#003c71",cursor:"pointer" }}
+        />
+        {/* <img className="arc" src={arc}></img> */}
       </div>
       {showClearConfirmationModal && (
         <Modal

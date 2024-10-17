@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Roboto', sans-serif;
-  background: #F2F2F2;
+  /* background: #F2F2F2; */
 }
 
 /* common styles */
@@ -86,34 +86,64 @@ body {
   color: #003c71;
 }
 
+/* Container for report and chat */
 .container {
-  position: absolute;
+  position: relative;
   width: 100%;
-  left: 0px;
-  margin: 0px auto;
-  display: inline-block;
+  height: 91.8vh;
+  display: flex;
+  overflow: hidden;
 }
 
+/* Report view on the left */
+.report-view {
+  width: 70%; /* Initially 100% width */
+  height: 100%;
+  background-color: #fff;
+  display: inline-block;
+  transition: width 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* When chat is expanded, report takes 70% width */
+.report-view.expanded {
+  width: 100%; /* Shrinks to 70% when chat expands */
+}
+
+/* Chat (app) div styling */
 div.app {
-  position: relative;
-  width: 40%;
-  height: 91.8vh;
+  position: absolute;
+  width: 30%; /* Chat takes 30% width when expanded */
+  height: 50px; /* Start collapsed at 50px height */
+  bottom: 0.1px;
+  right: 0px;
   background-image: url('../public/images/chat-bg-high.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  /* transition: width 0.5s ease; */
-  transition: width 0.7s cubic-bezier(0.645, 0.045, 0.355, 1), 
-  opacity 0.4s ease, 
-  padding 0.4s ease;
+  overflow: hidden;
+  transition: all 0.7s ease-in-out;
   display: inline-block;
   vertical-align: top;
+  opacity: 0; /* Start invisible */
+  transform: translate(100%, 100%); /* Start off-screen at the bottom-right */
 }
 
-div.app.collapsed {
-  width: 0;
-  overflow: hidden;
+/* Expanded chat (sliding in from bottom-right corner) */
+div.app.expanded {
+  height: 91.8vh; /* Full height when expanded */
+  opacity: 1;
+  transform: translate(0, 0); /* Bring to visible screen */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
+/* Collapsed chat (moving back to bottom-right) */
+div.app.collapsed {
+  opacity: 0; /* Fades out */
+  height: 50px; /* Shrinks to a small height */
+  transform: translate(100%, 100%); /* Moves back to bottom-right */
+  transition: all 0.7s ease-in-out;
+}
+
 
 div.app:before {
   content: '';
@@ -686,37 +716,41 @@ div.msg-box span.btn-group {
   cursor: pointer;
 }
 
+.toggle-button{
+  border-radius: 15px 15px 15px 15px;
+  background-color: white;
+  cursor: grabbing;
+  transition: all 0.5s ease;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  box-shadow: 2px 2px 20px #15b4ed, inset -10px -10px 55px #ffffff;
+  user-select: none; /* Prevents text selection while dragging */
+}
+
+.arc{
+  height: 10px;
+  width: 10px;
+}
+
 /* toggle */
 
-.toggleLeft {
+/* Button styling (bottom-right corner) */
+/* .toggle-button {
   position: absolute;
-  top: 48%;
-  right: -8px;
-  opacity: 0.5;
-  z-index: 999;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-}
+  transition: all 0.5s ease;
+} */
 
-.toggleRight {
-  position: absolute;
-  top: 48%;
-  left: 1px;
-  opacity: 0.5;
-  z-index: 999;
-  cursor: pointer;
-}
-
-.toggleLeft:hover {
-  opacity: 1;
-}
-
-.report-view {
-  width: 60%;
-  transition: width 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);;
-  display: inline-block;
-  vertical-align: top;
-}
-
-.app.collapsed+.report-view {
-  width: 100% !important;
-}
+/* Button state when collapsed */
+/* .toggle-button.collapsed {
+  width: 150px;
+} */
