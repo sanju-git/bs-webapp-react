@@ -102,7 +102,14 @@ div.app {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  transition: width 0.5s ease;
+  display: inline-block;
+  vertical-align: top;
+}
 
+div.app.collapsed {
+  width: 0;
+  overflow: hidden;
 }
 
 div.app:before {
@@ -674,3 +681,28 @@ div.msg-box span.btn-group {
   cursor: pointer;
 }
 
+/* toggle */
+
+.toggleLeft{
+  position: absolute;
+  top: 48%;
+  right: -8px;
+  opacity: 0.5;
+  z-index: 999;
+  cursor: pointer;
+}
+
+.toggleLeft:hover {
+  opacity: 1;
+}
+
+.report-view{
+  width: 60%;
+  transition: width 0.5s ease;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.app.collapsed + .report {
+  width: 100%;
+}

@@ -6,12 +6,15 @@ import BannerText from "./bannerText";
 import { v4 as uuidv4 } from "uuid";
 import Modal from "./Modal";
 import { NODE_URL } from "../constants/apiConstants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
   const [reportURL, setReportURL] = useState("");
   const [language, setLanguage] = useState("");
+  const [isChatCollapsed, setChatCollpase] = useState(false);
   const [showArcSpinner, setShowArcSpinner] = useState(false);
   const [showClearConfirmationModal, setClearConfirmationModal] =
     useState(false);
@@ -130,7 +133,7 @@ const Chatbot = () => {
     };
     setShowArcSpinner(true);
     try {
-      const res = await fetch(NODE_URL+"lex", {
+      const res = await fetch(NODE_URL + "lex", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +173,7 @@ const Chatbot = () => {
 
   return (
     <div className="container d-flex">
-      <div className="app">
+      <div className={`app ${isChatCollapsed ? "collapsed" : ""}`}>
         <div className="body wrapper">
           <div className="chat-messages">
             <div className="chat">
@@ -228,8 +231,17 @@ const Chatbot = () => {
             </div>
           </div>
         </div>
+        <div className="toggleLeft">
+          <FontAwesomeIcon
+            style={{ color: "#f2f2f2", height: 24, width: 24 }}
+            icon={faCircleChevronLeft}
+            onClick={() => {
+              setChatCollpase(!isChatCollapsed);
+            }}
+          />
+        </div>
       </div>
-      <div style={{ width: "60%", height: "90vh" }}>
+      <div className="report-view">
         {(!reportURL || reportURL.length === 0) && showArcSpinner && (
           <IronManArc />
         )}
@@ -244,15 +256,13 @@ const Chatbot = () => {
           </div>
         )}
         {reportURL && reportURL.length >= 1 && (
-          <div style={{ width: "60%" }}>
-            <div>
-              <Tableau
-                onSetShowArcSpinner={onSetShowArcSpinner}
-                iframeWidth="100%"
-                iframeHeight="100vh"
-                reportURL={reportURL}
-              />
-            </div>
+          <div>
+            <Tableau
+              onSetShowArcSpinner={onSetShowArcSpinner}
+              iframeWidth="100%"
+              iframeHeight="100vh"
+              reportURL={reportURL}
+            />
           </div>
         )}
       </div>
